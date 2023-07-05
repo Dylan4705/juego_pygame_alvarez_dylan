@@ -293,7 +293,7 @@ class Player:
         self.move_y += min(1, (self.fall_count / FPS) * self.gravity)
         self.fall_count +=1
 
-    def update(self,delta_ms,object):
+    def update(self,delta_ms,object,screen):
         self.do_gravity()
         self.do_movement(delta_ms)
         self.do_animation(delta_ms)
@@ -302,6 +302,7 @@ class Player:
         self.recharge()
         self.handle_vertical_collision(object,self.move_y)
         self.rock.update()
+        self.rock.draw(screen)
         # print("x={0} y={1}".format(self.rect.x,self.rect.y))
         
 
@@ -309,7 +310,7 @@ class Player:
         if(DEBUG):
             pygame.draw.rect(screen,RED,self.rect)
             pygame.draw.rect(screen,BLUE,self.trap_collition)
-            self.rock.draw(screen)
+            
 
         
 

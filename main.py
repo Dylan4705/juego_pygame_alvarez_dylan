@@ -15,10 +15,11 @@ def draw(screen,background,player,objects,offset_x):
     for obj in objects:
         obj.draw(screen,offset_x)
 
-    player.update(delta_ms,floor)
+    player.update(delta_ms, floor, screen)
     player.draw(screen)
-    enemy.update(delta_ms,floor)
+
     enemy.draw(screen)
+    enemy.update(player)
     
 
     
@@ -33,9 +34,9 @@ if __name__ == '__main__':
         
 
     pygame.init()
-    screen = pygame.display.set_mode((ANCHO_VENTANA,ALTO_VENTANA))
-    player = Player(player=0,x=580,y=500,speed_walk=7,speed_run=10,gravity=20,max_limit=ANCHO_VENTANA,p_scale=1)
-    enemy = Enemy(x=500,y=500,speed_walk=5,speed_run= 5,gravity=5,jump_power=5,frame_rate_ms=60,move_rate_ms=60,jump_height= 5,p_scale= 1,interval_time_jump= 100)
+    screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
+    player = Player(player=0, x=580, y=500, speed_walk=7, speed_run=10, gravity=20, max_limit=ANCHO_VENTANA, p_scale=1)
+    enemy = Enemy( x=700, y=550, move_x=5, speed=2, limit_x_start=0, limit_x_end=100, p_scale=1.5)
     clock = pygame.time.Clock()
 
     niveles = {"Plataformas":[Trap(-2,750-13,1,screen),
@@ -116,7 +117,12 @@ if __name__ == '__main__':
                             Block(1726,750,48,304,160),
                             Block(1774,750,48,304,160),
                             Block(1822,750,48,304,160),
-                            Block(600,600,48,304,160)]}
+                            Block(600,600,48,304,160),
+                            Block(648,600,48,304,160),
+                            Block(696,600,48,304,160),
+                            Block(744,600,48,304,160),
+                            Block(792,600,48,304,160)]
+                            }
 
     imagen_fondo = pygame.image.load(PATH_IMAGE + "locations/fondoestatico.jpg")
     imagen_fondo = pygame.transform.scale(imagen_fondo,(ANCHO_VENTANA,ALTO_VENTANA))
@@ -130,18 +136,11 @@ if __name__ == '__main__':
 
    
 
-   
-    
-
-  
-
-
 
     for plataforma in niveles["Plataformas"]:
         plataformas = [plataforma]
         floor.extend(plataformas)
 
-    
     
 
   

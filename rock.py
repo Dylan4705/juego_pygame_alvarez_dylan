@@ -20,6 +20,5 @@ class throw_rock(pygame.sprite.Sprite):
 			self.rect.x += self.speed
 		if self.direction == DIRECCION_R:
 			self.rect.x -= self.speed
-		print(self.direction)
 		self.destroy()
     
