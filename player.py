@@ -40,7 +40,9 @@ class Player:
         self.shoot_l = Auxiliar.getSurfaceFromSpriteSheet((PATH_IMAGE + player["shoot"]),4,1,True,scale = p_scale)
         self.knife_r = Auxiliar.getSurfaceFromSpriteSheet((PATH_IMAGE + player["knife"]),4,1 ,scale = p_scale)
         self.knife_l = Auxiliar.getSurfaceFromSpriteSheet((PATH_IMAGE + player["knife"]),4,1,True ,scale = p_scale)
-        
+        self.hud_life = Auxiliar.getSurfaceFromSpriteSheet("images\hud\life\HealthUI.png",1,7,False,scale= p_scale)
+
+
         self.max_limit = max_limit
 
         self.tiempo_transcurrido_animacion = 0
@@ -48,7 +50,7 @@ class Player:
         
         self.is_fall = True
         self.frame = 0
-        self.lives = 5
+        self.lives = 6
         self.score = 0
         self.move_x = 0
         self.move_y = 0
@@ -73,6 +75,9 @@ class Player:
 
         self.jump_count = 0
         self.fall_count = 0
+        self.invulnerable = False  # Variable de estado de invulnerabilidad
+        self.invulnerable_timer = 0  # Temporizador de invulnerabilidad
+        self.invulnerable_duration = 300  # Duración en milisegundos de la invulnerabilidad
         
         self.trap_collition = pygame.Rect(self.rect.x +self.rect.w/2.7,self.rect.y + self.rect.h - 14,self.rect.w /4,10)
 
@@ -119,16 +124,21 @@ class Player:
 
  
     def hit_player(self):
-        self.lives -= 1
-        self.move_y = -self.gravity* 0.5
-        if self.direction == DIRECCION_L:
-            self.move_x += self.gravity*0.3
-            
-        else:
-            self.move_x += -self.gravity*0.3
-        self.frame = 0
+        if not self.invulnerable:
 
-        self.recibe_hurt = True
+            self.lives -= 1
+            self.move_y = -self.gravity* 0.5
+            if self.direction == DIRECCION_L:
+                self.move_x += self.gravity*0.3
+                
+            else:
+                self.move_x += -self.gravity*0.3
+            self.frame = 0
+
+            self.recibe_hurt = True
+            self.invulnerable = True  # Activar el estado de invulnerabilidad
+            self.invulnerable_timer = pygame.time.get_ticks()  # Iniciar el temporizador
+            print(self.lives)
 
 
     def get_input(self,object):
@@ -163,7 +173,7 @@ class Player:
 
 
     def jump(self):
-        self.move_y = -self.gravity* 1
+        self.move_y = -self.gravity* 0.7
         self.frame = 0
         self.jump_count += 1
         if self.jump_count == 1:
@@ -254,7 +264,26 @@ class Player:
         self.rect.y += delta_y
         self.trap_collition.y += delta_y
 
-
+    def draw_hearts(self, screen):
+            
+            if self.lives == 6:
+                heart = self.hud_life[0]
+            if self.lives == 5:
+                heart = self.hud_life[1]
+            if self.lives == 4:
+                heart = self.hud_life[2]
+            if self.lives == 3:
+                heart = self.hud_life[3]
+            if self.lives == 2:
+                heart = self.hud_life[4]
+            if self.lives == 1:
+                heart = self.hud_life[5]
+            if self.lives <= 0:
+                heart = self.hud_life[6]
+            x = 33*10  # Posición x inicial
+            y = 10*2  # Posición y
+            heart = pygame.transform.scale(heart, (33*5, 10*5))
+            screen.blit(heart, (x, y))
 
     def update_sprites(self):
         try:
@@ -301,16 +330,18 @@ class Player:
         self.limits()
         self.recharge()
         self.handle_vertical_collision(object,self.move_y)
-        self.rock.update()
+        self.rock.update(screen)
         self.rock.draw(screen)
+        self.draw_hearts(screen)
         # print("x={0} y={1}".format(self.rect.x,self.rect.y))
         
 
     def draw(self,screen):
+        
         if(DEBUG):
             pygame.draw.rect(screen,RED,self.rect)
             pygame.draw.rect(screen,BLUE,self.trap_collition)
-            
+
 
         
 

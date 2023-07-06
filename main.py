@@ -8,7 +8,7 @@ from rock import throw_rock
 from trampas import *
     
 
-def draw(screen,background,player,objects,offset_x):
+def draw(screen,background,player,objects,offset_x,rock,enemy_list):
 
     screen.blit(background,background.get_rect())
 
@@ -18,8 +18,12 @@ def draw(screen,background,player,objects,offset_x):
     player.update(delta_ms, floor, screen)
     player.draw(screen)
 
-    enemy.draw(screen)
-    enemy.update(player)
+    contador = 0
+    for enemy in enemy_list:
+        
+        enemy.draw(screen)
+        enemy.update(player,rock,enemy_list,contador)
+        contador +=1
     
 
     
@@ -34,10 +38,16 @@ if __name__ == '__main__':
         
 
     pygame.init()
+    enemy_list = []
     screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
     player = Player(player=0, x=580, y=500, speed_walk=7, speed_run=10, gravity=20, max_limit=ANCHO_VENTANA, p_scale=1)
-    enemy = Enemy( x=700, y=550, move_x=5, speed=2, limit_x_start=0, limit_x_end=100, p_scale=1.5)
+    enemy_list.append(Enemy( x=700, y=550, move_x=5, speed=2, limit_x_start=0, limit_x_end=100, p_scale=1.5))
+    enemy_list.append(Enemy( x=700, y=300, move_x=-5, speed=2, limit_x_start=-100, limit_x_end=0, p_scale=1.5))
+    enemy_list.append(Enemy( x=700, y=200, move_x=-5, speed=2, limit_x_start=-100, limit_x_end=0, p_scale=1.5))
+    enemy_list.append(Enemy( x=700, y=100, move_x=-5, speed=2, limit_x_start=-100, limit_x_end=0, p_scale=1.5))
+
     clock = pygame.time.Clock()
+    rock = player.rock
 
     niveles = {"Plataformas":[Trap(-2,750-13,1,screen),
                             Trap(46,750-13,1,screen),
@@ -161,9 +171,14 @@ if __name__ == '__main__':
         player.get_input(floor.count)
     
     
-        draw(screen,imagen_fondo,player,floor,offset_x)
+        draw(screen,imagen_fondo,player,floor,offset_x,player.rock,enemy_list)
         
-			
+        if player.invulnerable:
+                current_time = pygame.time.get_ticks()
+                if current_time - player.invulnerable_timer >= player.invulnerable_duration:
+                    player.invulnerable = False  # Finalizar la invulnerabilidad si ha pasado el tiempo
+
+		
         #player update --
         #enemigos update 
         #player dibujarlo
