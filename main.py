@@ -6,9 +6,9 @@ from plataformas import *
 from enemigo import Enemy
 from rock import throw_rock
 from trampas import *
-    
+from botin import Botin    
 
-def draw(screen,background,player,objects,offset_x,rock,enemy_list):
+def draw(screen,background,player,objects,offset_x,rock,enemy_list,botin_list):
 
     screen.blit(background,background.get_rect())
 
@@ -18,12 +18,21 @@ def draw(screen,background,player,objects,offset_x,rock,enemy_list):
     player.update(delta_ms, floor, screen)
     player.draw(screen)
 
-    contador = 0
+    contador_enemigos = 0
     for enemy in enemy_list:
         
         enemy.draw(screen)
-        enemy.update(player,rock,enemy_list,contador)
-        contador +=1
+        enemy.update(player,rock,enemy_list,contador_enemigos)
+        contador_enemigos +=1
+
+    contador_botin = 0
+    for botin in botin_list:
+        
+        botin.draw(screen)
+        botin.update(player,botin_list,contador_botin)
+        contador_botin +=1
+        
+    
     
 
     
@@ -39,13 +48,14 @@ if __name__ == '__main__':
 
     pygame.init()
     enemy_list = []
+    botin_list = []
     screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
     player = Player(player=0, x=50, y=50, speed_walk=7, speed_run=10, gravity=20, max_limit=ANCHO_VENTANA, p_scale=1)
     enemy_list.append(Enemy( 1,x=700, y=550, move_x=5, speed=2, limit_x_start=0, limit_x_end=100, p_scale=1.5))
     enemy_list.append(Enemy( 1,x=700, y=300, move_x=-5, speed=2, limit_x_start=-100, limit_x_end=0, p_scale=1.5))
     enemy_list.append(Enemy( 1,x=700, y=200, move_x=-5, speed=2, limit_x_start=-100, limit_x_end=0, p_scale=1.5))
     enemy_list.append(Enemy( 2,x=300, y=700, move_x=-5, speed=3, limit_x_start=-100, limit_x_end=0, p_scale=1.5))
-
+    botin_list.append(Botin(x= 50,y=50,p_scale=3))
     clock = pygame.time.Clock()
     rock = player.rock
 
@@ -178,7 +188,7 @@ if __name__ == '__main__':
         player.get_input()
     
     
-        draw(screen,imagen_fondo,player,floor,offset_x,player.rock,enemy_list)
+        draw(screen,imagen_fondo,player,floor,offset_x,player.rock,enemy_list,botin_list)
         
         if player.invulnerable:
                 current_time = pygame.time.get_ticks()

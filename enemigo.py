@@ -69,7 +69,7 @@ class Enemy():
     def check_collision(self, player, rocks):
         self.collision_rect = pygame.Rect(self.rect.x + self.rect.w/2.7, self.rect.y, self.rect.width // 3, self.rect.height)
         if self.collision_rect.colliderect(player.trap_collition):
-            if player.trap_collition.y < self.rect.y and player.invulnerable== False:
+            if player.trap_collition.y < self.rect.y and player.invulnerable == False:
                 self.is_dead = True
             player.hit_player(2)
 

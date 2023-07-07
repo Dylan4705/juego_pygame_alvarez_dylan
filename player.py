@@ -283,10 +283,15 @@ class Player:
                 heart = self.hud_life[5]
             if self.lives <= 0:
                 heart = self.hud_life[6]
-            x = 0 # Posición x inicial
-            y = 0+5 # Posición y
+            x =500# 0 # Posición x inicial 
+            
+            y = 500#0+5 # Posición y
             heart = pygame.transform.scale(heart, (33*5, 10*5))
             screen.blit(heart, (x, y))
+
+    def obtain_point(self,points):
+        self.score += points
+        print(self.score)
 
     def update_sprites(self):
         try:
