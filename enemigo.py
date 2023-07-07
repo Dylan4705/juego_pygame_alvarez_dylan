@@ -5,13 +5,22 @@ from auxiliar import Auxiliar
 from rock import *
 
 class Enemy():
-    def __init__(self, x=100, y=200, move_x=5, speed=2, limit_x_start=0, limit_x_end=200, p_scale=1):
-        self.walk_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Run_6.png", 6, 1, scale=p_scale)
-        self.walk_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Run_6.png", 6, 1, flip=True, scale=p_scale)
-        self.stay_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Idle_4.png", 6, 1, scale=p_scale)
-        self.stay_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Idle_4.png", 6, 1, flip=True, scale=p_scale)
-        self.dead_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Death_8.png", 8, 1 ,scale=p_scale)
-        self.dead_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Death_8.png", 8, 1, flip=True ,scale=p_scale)
+    def __init__(self, enemy = 1,x=100, y=200, move_x=5, speed=2, limit_x_start=0, limit_x_end=200, p_scale=1):
+
+        if enemy == 1:
+            self.walk_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Run_6.png", 6, 1, scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Run_6.png", 6, 1, flip=True, scale=p_scale)
+            self.stay_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Idle_4.png", 6, 1, scale=p_scale)
+            self.stay_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Idle_4.png", 6, 1, flip=True, scale=p_scale)
+            self.dead_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Death_8.png", 8, 1 ,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Death_8.png", 8, 1, flip=True ,scale=p_scale)
+        elif enemy == 2:
+            self.walk_r = Auxiliar.getSurfaceFromSpriteSheet("images\caracters\enemies\monstruito_celeste\Dude_Monster_Run_6.png", 6, 1, scale=p_scale)
+            self.walk_l = Auxiliar.getSurfaceFromSpriteSheet("images\caracters\enemies\monstruito_celeste\Dude_Monster_Run_6.png", 6, 1, flip=True, scale=p_scale)
+            self.stay_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Idle_4.png", 6, 1, scale=p_scale)
+            self.stay_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/1 Pink_Monster/Pink_Monster_Idle_4.png", 6, 1, flip=True, scale=p_scale)
+            self.dead_r = Auxiliar.getSurfaceFromSpriteSheet("images\caracters\enemies\monstruito_celeste\Dude_Monster_Death_8.png", 8, 1 ,scale=p_scale)
+            self.dead_l = Auxiliar.getSurfaceFromSpriteSheet("images\caracters\enemies\monstruito_celeste\Dude_Monster_Death_8.png", 8, 1, flip=True ,scale=p_scale)
 
         self.rect = self.walk_l[0].get_rect()
         self.rect.x = x
@@ -60,11 +69,17 @@ class Enemy():
     def check_collision(self, player, rocks):
         self.collision_rect = pygame.Rect(self.rect.x + self.rect.w/2.7, self.rect.y, self.rect.width // 3, self.rect.height)
         if self.collision_rect.colliderect(player.trap_collition):
-            player.hit_player()
+            if player.trap_collition.y < self.rect.y and player.invulnerable== False:
+                self.is_dead = True
+            player.hit_player(2)
 
         for rock in rocks:
             if self.collision_rect.colliderect(rock.rect):
                 self.is_dead = True
+                rock.kill()
+
+
+                
 
     def update(self, player_rect, rock, enemy_list, enemy_index):
         current_time = pygame.time.get_ticks()

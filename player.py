@@ -77,7 +77,7 @@ class Player:
         self.fall_count = 0
         self.invulnerable = False  # Variable de estado de invulnerabilidad
         self.invulnerable_timer = 0  # Temporizador de invulnerabilidad
-        self.invulnerable_duration = 300  # Duración en milisegundos de la invulnerabilidad
+        self.invulnerable_duration = 600  # Duración en milisegundos de la invulnerabilidad
         
         self.trap_collition = pygame.Rect(self.rect.x +self.rect.w/2.7,self.rect.y + self.rect.h - 14,self.rect.w /4,10)
 
@@ -104,6 +104,8 @@ class Player:
                 if isinstance(obj, Trap):
                     trap_collision = True
                 else:
+
+                    
                     if dy > 0:
                         player.rect.bottom = obj.rect.top
                         player.landed()
@@ -111,22 +113,23 @@ class Player:
                         player.rect.top = obj.rect.bottom
                         player.hit_head()
 
+
                 collided_objects.append(obj)
 
 
         
         if trap_collision:
             
-            player.hit_player()
+            player.hit_player(3)
             print(player.lives)
 
         return collided_objects
 
  
-    def hit_player(self):
+    def hit_player(self,negative_lives):
         if not self.invulnerable:
 
-            self.lives -= 1
+            self.lives -= negative_lives
             self.move_y = -self.gravity* 0.5
             if self.direction == DIRECCION_L:
                 self.move_x += self.gravity*0.3
@@ -141,7 +144,7 @@ class Player:
             print(self.lives)
 
 
-    def get_input(self,object):
+    def get_input(self):
             keys = pygame.key.get_pressed()
             if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP]):
                 self.walk(DIRECCION_L)
@@ -280,8 +283,8 @@ class Player:
                 heart = self.hud_life[5]
             if self.lives <= 0:
                 heart = self.hud_life[6]
-            x = 33*10  # Posición x inicial
-            y = 10*2  # Posición y
+            x = 0 # Posición x inicial
+            y = 0+5 # Posición y
             heart = pygame.transform.scale(heart, (33*5, 10*5))
             screen.blit(heart, (x, y))
 

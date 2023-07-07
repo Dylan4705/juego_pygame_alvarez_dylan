@@ -4,7 +4,7 @@ DIRECCION_L = 0
 DIRECCION_R = 1
 FPS = 60
 
-DEBUG = False
+DEBUG = True
 PATH_IMAGE = "images/"
 
 RED = (255,0,0)
