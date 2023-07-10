@@ -14,7 +14,8 @@ orco_verde = {"walk":"caracters/Orc_Warrior/Run.png",
                   "jump_Fall": "caracters/Orc_Warrior/jump_Fall.png",
                   "hurt": "caracters/Orc_Warrior/Hurt.png",
                   "shoot": "caracters/Orc_Warrior/Attack_2.png",
-                  "knife": "caracters/Orc_Warrior/Attack_1.png"}
+                  "knife": "caracters/Orc_Warrior/Attack_1.png",
+                  "dead": "caracters/Orc_Warrior/Dead2.png"}
 
 
 
@@ -40,6 +41,7 @@ class Player:
         self.shoot_l = Auxiliar.getSurfaceFromSpriteSheet((PATH_IMAGE + player["shoot"]),4,1,True,scale = p_scale)
         self.knife_r = Auxiliar.getSurfaceFromSpriteSheet((PATH_IMAGE + player["knife"]),4,1 ,scale = p_scale)
         self.knife_l = Auxiliar.getSurfaceFromSpriteSheet((PATH_IMAGE + player["knife"]),4,1,True ,scale = p_scale)
+        self.dead_animation = Auxiliar.getSurfaceFromSpriteSheet((PATH_IMAGE + player["dead"]),6,1,True ,scale = p_scale)
         self.hud_life = Auxiliar.getSurfaceFromSpriteSheet("images\hud\life\HealthUI.png",1,7,False,scale= p_scale)
 
 
@@ -66,12 +68,12 @@ class Player:
         self.recibe_hurt = False
    
         self.animation = self.stay_l
-        self.direction = DIRECCION_L
+        self.direction = DIRECCION_R
         self.image = self.animation[self.frame]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
+        self.is_dead = False
 
         self.jump_count = 0
         self.fall_count = 0
@@ -79,7 +81,7 @@ class Player:
         self.invulnerable_timer = 0  # Temporizador de invulnerabilidad
         self.invulnerable_duration = 600  # Duración en milisegundos de la invulnerabilidad
         
-        self.trap_collition = pygame.Rect(self.rect.x +self.rect.w/2.7,self.rect.y + self.rect.h - 14,self.rect.w /4,10)
+        self.trap_collition = pygame.Rect(self.rect.x +self.rect.w/2.7,self.rect.y + self.rect.h - 25,self.rect.w /4,10)
 
 
     
@@ -104,8 +106,6 @@ class Player:
                 if isinstance(obj, Trap):
                     trap_collision = True
                 else:
-
-                    
                     if dy > 0:
                         player.rect.bottom = obj.rect.top
                         player.landed()
@@ -145,19 +145,22 @@ class Player:
 
 
     def get_input(self):
-            keys = pygame.key.get_pressed()
-            if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP]):
-                self.walk(DIRECCION_L)
-            if(keys[pygame.K_RIGHT]and not keys[pygame.K_LEFT] and not keys[pygame.K_UP]):
-                self.walk(DIRECCION_R)
-            if(not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_UP]):
-                self.stay()
-            if(keys[pygame.K_RIGHT] and keys[pygame.K_LEFT] and not keys[pygame.K_UP]):
-                self.stay()
-            if keys[pygame.K_z] and self.ready_for_shoot:
-                self.shoot_objeto() 
-                self.ready_for_shoot = False
-                self.shoot_time = pygame.time.get_ticks()
+            if self.is_dead == False:
+                keys = pygame.key.get_pressed()
+                if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP]):
+                    self.walk(DIRECCION_L)
+                if(keys[pygame.K_RIGHT]and not keys[pygame.K_LEFT] and not keys[pygame.K_UP]):
+                    self.walk(DIRECCION_R)
+                if(not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_UP]):
+                    self.stay()
+                if(keys[pygame.K_RIGHT] and keys[pygame.K_LEFT] and not keys[pygame.K_UP]):
+                    self.stay()
+                if keys[pygame.K_z] and self.ready_for_shoot:
+                    self.shoot_objeto() 
+                    self.ready_for_shoot = False
+                    self.shoot_time = pygame.time.get_ticks()
+            else:
+                pass
 
             
 
@@ -176,7 +179,7 @@ class Player:
 
 
     def jump(self):
-        self.move_y = -self.gravity* 0.7
+        self.move_y = -self.gravity* 0.6
         self.frame = 0
         self.jump_count += 1
         if self.jump_count == 1:
@@ -198,8 +201,8 @@ class Player:
 
 
 
-
-        self.trap_collition = pygame.Rect(self.rect.x +self.rect.w/2.7,self.rect.y + self.rect.h - 25,self.rect.w /4,10)
+        
+        self.trap_collition = pygame.Rect(self.rect.x +self.rect.w/2.7,self.rect.y + self.rect.h/2,self.rect.w /4,self.rect.h-50)
 
 
 # def esta_en_plataforma(self, lista_plataformas):
@@ -248,7 +251,7 @@ class Player:
 
    
     def shoot_objeto(self):
-        self.rock.add(throw_rock(self.rect.center,-8,self.rect.bottom,self.direction))
+        self.rock.add(throw_rock(self.rect.center,-8,self.rect.bottom,self.direction,is_a_enemy= False))
 
 
     def recharge(self):
@@ -283,9 +286,9 @@ class Player:
                 heart = self.hud_life[5]
             if self.lives <= 0:
                 heart = self.hud_life[6]
-            x =500# 0 # Posición x inicial 
+            x =0 # Posición x inicial 
             
-            y = 500#0+5 # Posición y
+            y = 5 # Posición y
             heart = pygame.transform.scale(heart, (33*5, 10*5))
             screen.blit(heart, (x, y))
 
@@ -295,30 +298,34 @@ class Player:
 
     def update_sprites(self):
         try:
-            if self.jump_count != 0:
-                
-                if self.direction == DIRECCION_L:
-                    self.animation = self.jump_Fall_l
-                else:
-                    self.animation = self.jump_Fall_r
+            if self.is_dead == False:
 
-
-            elif self.move_x != 0:
-                
-                if self.direction == DIRECCION_L:
-                    self.animation = self.walk_l
-                else:                  
-                    self.animation = self.walk_r
-
+                if self.jump_count != 0:
                     
+                    if self.direction == DIRECCION_L:
+                        self.animation = self.jump_Fall_l
+                    else:
+                        self.animation = self.jump_Fall_r
 
-            else:
+
+                elif self.move_x != 0:
+                    
+                    if self.direction == DIRECCION_L:
+                        self.animation = self.walk_l
+                    else:                  
+                        self.animation = self.walk_r
+
+                        
+
+                else:
+                    
+                    if self.direction == DIRECCION_L:            
+                        self.animation = self.stay_l
+                    else:                  
+                        self.animation = self.stay_r
                 
-                if self.direction == DIRECCION_L:            
-                    self.animation = self.stay_l
-                else:                  
-                    self.animation = self.stay_r
-            
+            else:
+                self.animation = self.dead_animation
             self.image = self.animation[self.frame]
             
             
@@ -327,10 +334,20 @@ class Player:
             
         
     def do_gravity(self):
-        self.move_y += min(1, (self.fall_count / FPS) * self.gravity)
-        self.fall_count +=1
+        if self.is_dead == False:
+            self.move_y += min(1, (self.fall_count / FPS) * self.gravity)
+            self.fall_count +=1
+        else:
+            pass
 
-    def update(self,delta_ms,object,screen):
+    def dead(self):
+        if self.lives <= 0:
+            self.move_x = 0
+            self.move_y = 0
+            self.is_dead = True
+            self.animation = self.dead_animation
+
+    def update(self,delta_ms,object,screen,enemy_list):
         self.do_gravity()
         self.do_movement(delta_ms)
         self.do_animation(delta_ms)
@@ -341,6 +358,16 @@ class Player:
         self.rock.update(screen)
         self.rock.draw(screen)
         self.draw_hearts(screen)
+        for enemy in enemy_list:
+            
+
+            for pop in enemy.pop:
+                if self.trap_collition.colliderect(pop.rect):
+                    self.hit_player(2)
+                    pop.kill()
+                    # El jugador ha chocado con una "pop" del enemigo
+                    # Realiza las acciones necesarias aquí
+        self.dead()
         # print("x={0} y={1}".format(self.rect.x,self.rect.y))
         
 
