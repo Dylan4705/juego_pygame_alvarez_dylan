@@ -26,7 +26,7 @@ class Enemy():
             self.walk_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/7 Bird/Walk.png", 6, 1, flip=True, scale=p_scale)
             self.dead_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/7 Bird/Death.png", 4, 1 ,scale=p_scale)
             self.dead_l = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/7 Bird/Death.png", 4, 1, flip=True ,scale=p_scale)
-        elif self.enemy == 4:
+        elif self.enemy == 4 or self.enemy == 5:
             self.walk_r = Auxiliar.getSurfaceFromSpriteSheet("images\caracters\8 Bird 2\Walk.png", 6, 1, scale=p_scale)
             self.walk_l = Auxiliar.getSurfaceFromSpriteSheet("images\caracters\8 Bird 2\Walk.png", 6, 1, flip=True, scale=p_scale)
             self.dead_r = Auxiliar.getSurfaceFromSpriteSheet("images\caracters\8 Bird 2\Death.png", 4, 1 ,scale=p_scale)
@@ -50,21 +50,30 @@ class Enemy():
         self.pop = pygame.sprite.Group()
         self.last_shoot_time = 0  # Tiempo en milisegundos desde el inicio del juego
         self.shoot_interval = shoot_interval  # Intervalo de tiempo deseado entre disparos en milisegundos
-
+        self.paused_frame = 0
+        self.contador = 0
         # Definir el tamaño del rectángulo de colisión del enemigo
         self.collision_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width // 2, self.rect.height)
 
     def change_x(self, delta_x):
         self.rect.x += delta_x
 
-    def do_movement(self):
-        if self.rect.x <= self.limit_x_start:
-            self.move_x = self.speed_walk
-            self.animation = self.walk_r
-        elif self.rect.x >= self.limit_x_end:
-            self.move_x = -self.speed_walk
-            self.animation = self.walk_l
-        self.change_x(self.move_x)
+    def do_movement(self,player):
+        if player.is_paused == False:
+            if self.rect.x <= self.limit_x_start:
+                self.move_x = self.speed_walk
+                self.animation = self.walk_r
+
+            elif self.rect.x >= self.limit_x_end:
+                self.move_x = -self.speed_walk
+                self.animation = self.walk_l
+                if self.enemy == 5:
+                    self.contador += 1
+                    if self.contador == 2:
+                        print("SE MURIO NOMAS")
+                        self.is_dead = True
+
+            self.change_x(self.move_x)
 
     def dead(self):
         if self.is_dead:
@@ -85,7 +94,7 @@ class Enemy():
             if self.collision_rect.colliderect(player.trap_collition):
                 if player.trap_collition.y < self.rect.y and player.invulnerable == False:
                     self.is_dead = True
-                if self.enemy == 3 or self.enemy == 4:
+                if self.enemy == 3 or self.enemy == 4 or self.enemy == 5 :
                     player.hit_player(0)
                     self.is_dead = True
                 else: player.hit_player(2)
@@ -108,25 +117,29 @@ class Enemy():
         current_time = pygame.time.get_ticks()
         elapsed_time = current_time - self.tiempo_transcurrido_animation
 
-        if elapsed_time > self.frame_rate_ms:
-            self.tiempo_transcurrido_animation = current_time
-            self.frame += 1
 
-            if self.frame >= len(self.animation):
-                if self.animation == self.dead_r or self.animation == self.dead_l:
-                    del enemy_list[enemy_index]
-                else:
-                    self.frame = 0
-                    # Eliminar el enemigo de la lista
+        if player_rect.is_paused:
+            self.frame = self.paused_frame 
+        else:
+            if elapsed_time > self.frame_rate_ms:
+                self.tiempo_transcurrido_animation = current_time
+                self.frame += 1
+
+                if self.frame >= len(self.animation):
+                    if self.animation == self.dead_r or self.animation == self.dead_l:
+                        del enemy_list[enemy_index]
+                    else:
+                        self.frame = 0
+                        # Eliminar el enemigo de la lista
 
 
-        if current_time - self.last_shoot_time >= self.shoot_interval and self.enemy == 4:
+        if (current_time - self.last_shoot_time >= self.shoot_interval and (self.enemy == 4 or self.enemy == 5)) and player_rect.is_paused == False :
             self.enemy_shoot()
             self.last_shoot_time = current_time
 
         self.check_collision(player_rect, rock)
-        self.do_movement()
-        self.pop.update(screen)
+        self.do_movement(player_rect)
+        self.pop.update(screen,player_rect)
         self.pop.draw(screen)
         self.dead()
 

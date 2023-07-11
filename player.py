@@ -80,11 +80,25 @@ class Player:
         self.invulnerable = False  # Variable de estado de invulnerabilidad
         self.invulnerable_timer = 0  # Temporizador de invulnerabilidad
         self.invulnerable_duration = 600  # Duración en milisegundos de la invulnerabilidad
+        self.is_win = False
+        self.is_paused = False
+        self.paused_frame = 0
         
         self.trap_collition = pygame.Rect(self.rect.x +self.rect.w/2.7,self.rect.y + self.rect.h - 25,self.rect.w /4,10)
 
 
-    
+    def pause(self):
+        self.is_paused = not self.is_paused
+
+        if self.is_paused:
+            self.move_x = 0
+            self.move_y = 0
+            self.paused_frame = self.frame  # Almacenar el frame actual durante la pausa
+            
+        else:
+            self.frame = self.paused_frame  # Restaurar el frame actual al reanudar el juego
+            
+            
 
 
     def landed(self):
@@ -121,7 +135,7 @@ class Player:
         if trap_collision:
             
             player.hit_player(3)
-            print(player.lives)
+            
 
         return collided_objects
 
@@ -141,11 +155,11 @@ class Player:
             self.recibe_hurt = True
             self.invulnerable = True  # Activar el estado de invulnerabilidad
             self.invulnerable_timer = pygame.time.get_ticks()  # Iniciar el temporizador
-            print(self.lives)
+            
 
 
     def get_input(self):
-            if self.is_dead == False:
+            if self.is_dead == False and self.is_paused == False:
                 keys = pygame.key.get_pressed()
                 if(keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP]):
                     self.walk(DIRECCION_L)
@@ -272,69 +286,63 @@ class Player:
 
     def draw_hearts(self, screen):
             
-            if self.lives == 6:
+            if self.lives > 6:
                 heart = self.hud_life[0]
-            if self.lives == 5:
+                self.lives = 6
+            elif self.lives == 6:
+                heart = self.hud_life[0]
+            elif self.lives == 5:
                 heart = self.hud_life[1]
-            if self.lives == 4:
+            elif self.lives == 4:
                 heart = self.hud_life[2]
-            if self.lives == 3:
+            elif self.lives == 3:
                 heart = self.hud_life[3]
-            if self.lives == 2:
+            elif self.lives == 2:
                 heart = self.hud_life[4]
-            if self.lives == 1:
+            elif self.lives == 1:
                 heart = self.hud_life[5]
-            if self.lives <= 0:
+            elif self.lives <= 0:
                 heart = self.hud_life[6]
             x =0 # Posición x inicial 
-            
             y = 5 # Posición y
             heart = pygame.transform.scale(heart, (33*5, 10*5))
             screen.blit(heart, (x, y))
 
     def obtain_point(self,points):
         self.score += points
-        print(self.score)
+        
+
+# Resto del código...
 
     def update_sprites(self):
-        try:
-            if self.is_dead == False:
-
+        if not self.is_dead:
+            if not self.is_paused:  # Agregar condición de pausa
                 if self.jump_count != 0:
-                    
                     if self.direction == DIRECCION_L:
                         self.animation = self.jump_Fall_l
                     else:
                         self.animation = self.jump_Fall_r
-
-
                 elif self.move_x != 0:
-                    
                     if self.direction == DIRECCION_L:
                         self.animation = self.walk_l
-                    else:                  
+                    else:
                         self.animation = self.walk_r
-
-                        
-
                 else:
-                    
-                    if self.direction == DIRECCION_L:            
+                    if self.direction == DIRECCION_L:
                         self.animation = self.stay_l
-                    else:                  
+                    else:
                         self.animation = self.stay_r
-                
             else:
-                self.animation = self.dead_animation
-            self.image = self.animation[self.frame]
-            
-            
-        except IndexError:
-            print("Error: Índice fuera de rango al acceder a la animación")
+                # Establecer la animación de estar quieto durante la pausa
+                self.frame = self.paused_frame # Mostrar el frame actual durante la pausa
+
+        self.image = self.animation[self.frame]
+
+
             
         
     def do_gravity(self):
-        if self.is_dead == False:
+        if self.is_dead == False and self.is_paused == False:
             self.move_y += min(1, (self.fall_count / FPS) * self.gravity)
             self.fall_count +=1
         else:
@@ -346,6 +354,7 @@ class Player:
             self.move_y = 0
             self.is_dead = True
             self.animation = self.dead_animation
+            self.is_paused = True
 
     def update(self,delta_ms,object,screen,enemy_list):
         self.do_gravity()
@@ -355,7 +364,7 @@ class Player:
         self.limits()
         self.recharge()
         self.handle_vertical_collision(object,self.move_y)
-        self.rock.update(screen)
+        self.rock.update(screen,self)
         self.rock.draw(screen)
         self.draw_hearts(screen)
         for enemy in enemy_list:
@@ -367,9 +376,20 @@ class Player:
                     pop.kill()
                     # El jugador ha chocado con una "pop" del enemigo
                     # Realiza las acciones necesarias aquí
+
+
         self.dead()
-        # print("x={0} y={1}".format(self.rect.x,self.rect.y))
+        self.win()
+        if DEBUG:
+            print("Coords Player: x={0} y={1}".format(self.rect.x,self.rect.y))
         
+
+   
+    def win(self):
+        if self.is_win == True or self.is_dead == True:
+            self.is_paused = True
+            self.move_x = 0
+            self.move_y = 0
 
     def draw(self,screen):
         

@@ -18,26 +18,31 @@ class throw_rock(pygame.sprite.Sprite):
 		self.height_y_constraint = screen_height
 	def destroy(self):
 		if self.is_a_enemy == False:
-			if self.rect.y <= -50 or self.rect.y >= self.height_y_constraint + 50:
+			if self.rect.x <= -50 or self.rect.x >= ANCHO_VENTANA + 50:
 				self.kill()
+				
 		else:
-			if self.rect.y >= ALTO_VENTANA:
+			if self.rect.y >= ALTO_VENTANA or self.rect.x <= -50 or self.rect.x >= ANCHO_VENTANA + 50:
 				self.kill()
 
 
 
-	def update(self,screen):
-		if self.is_a_enemy == False:
-			if self.direction == DIRECCION_L:
-				self.rect.x += self.speed
-			if self.direction == DIRECCION_R:
-				self.rect.x -= self.speed
-		if self.is_a_enemy == True:
-			self.rect.y -= self.speed
-		if self.is_a_enemy == False:
-			self.rock_collition = pygame.Rect(self.rect.x,self.rect.y,self.rect.w,self.rect.h)
+	def update(self,screen,player):
+		if player.is_paused == False:
+			if self.is_a_enemy == False:
+				if self.direction == DIRECCION_L:
+					self.rect.x += self.speed
+				if self.direction == DIRECCION_R:
+					self.rect.x -= self.speed
+			if self.is_a_enemy == True:
+				self.rect.y -= self.speed
+			if self.is_a_enemy == False:
+				self.rock_collition = pygame.Rect(self.rect.x,self.rect.y,self.rect.w,self.rect.h)
+			else:
+				self.rock_collition = pygame.Rect(self.rect.x,self.rect.y,self.rect.w,self.rect.h)
 		else:
-			self.rock_collition = pygame.Rect(self.rect.x,self.rect.y,self.rect.w,self.rect.h)
+			self.rect.x += 0
+			self.rect.y += 0
 		pygame.draw.rect(screen,BLUE,self.rock_collition)
 		self.destroy()
 		

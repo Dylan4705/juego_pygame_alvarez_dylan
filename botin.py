@@ -9,6 +9,8 @@ class Botin():
             self.rotate_animation_botin = Auxiliar.getSurfaceFromSpriteSheet("images\locations\coins_animation_gold.png",8,1,scale=p_scale)
         if type_botin == 2:
             self.rotate_animation_botin = Auxiliar.getSurfaceFromSpriteSheet("images\locations\coins_animation_silver.png",8,1,scale=p_scale)
+        if type_botin == 3:
+            self.rotate_animation_botin = Auxiliar.getSurfaceFromSpriteSheet("images\locations\life_potion.png.png",3,3,scale=p_scale)[0:8]
         self.rect = self.rotate_animation_botin[0].get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -22,7 +24,9 @@ class Botin():
         self.image = self.animation[self.frame]
         self.frame_rate_ms = FPS
         self.flag_first = True
-        
+        self.paused_frame = 0
+
+
     def check_collision(self, player):
         self.collision_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width , self.rect.height)
         if self.collision_rect.colliderect(player.trap_collition):
@@ -33,6 +37,8 @@ class Botin():
                     player.obtain_point(10)
                 elif self.type_botin == 2:
                     player.obtain_point(5)
+                elif self.type_botin == 3:
+                    player.lives += 3
                 self.flag_first = False
             print(player.score)
 
@@ -40,13 +46,15 @@ class Botin():
     def update(self, player_rect, point_list, point_index):
         current_time = pygame.time.get_ticks()
         elapsed_time = current_time - self.tiempo_transcurrido_animation
+        if player_rect.is_paused:
+            self.frame = self.paused_frame 
+        else:
+            if elapsed_time > self.frame_rate_ms:
+                self.tiempo_transcurrido_animation = current_time
+                self.frame += 1
 
-        if elapsed_time > self.frame_rate_ms:
-            self.tiempo_transcurrido_animation = current_time
-            self.frame += 1
-
-            if self.frame >= len(self.animation):
-                self.frame = 0
+                if self.frame >= len(self.animation):
+                    self.frame = 0
 
         if self.obtain == True:
             
