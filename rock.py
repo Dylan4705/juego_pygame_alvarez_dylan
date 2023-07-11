@@ -43,7 +43,8 @@ class throw_rock(pygame.sprite.Sprite):
 		else:
 			self.rect.x += 0
 			self.rect.y += 0
-		pygame.draw.rect(screen,BLUE,self.rock_collition)
+		if DEBUG:
+			pygame.draw.rect(screen,BLUE,self.rock_collition)
 		self.destroy()
 		
 

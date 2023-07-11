@@ -124,23 +124,22 @@ def nivel_2_():
     botin_list.append(Botin(type_botin= 2,x= 379,y=700,p_scale=3))
     botin_list.append(Botin(type_botin= 2,x= 1010,y=700,p_scale=3))
 
-            # botin_list.append(Botin(type_botin= 2,x= 906,y=510,p_scale=3))
-            # botin_list.append(Botin(type_botin= 2,x= 1148,y=460,p_scale=3))
-            # botin_list.append(Botin(type_botin= 1,x= 800,y=680,p_scale=3))
-            # botin_list.append(Botin(type_botin= 1,x= 1342,y=90,p_scale=3))
+    decoration_list.append(BackgroundObject(number=31,x=860,y=666,width=100,height=100)) 
+    decoration_list.append(BackgroundObject(number=33,x=350,y=666,width=100,height=100)) 
+    decoration_list.append(BackgroundObject(number=22,x=55,y=56,width=100,height=100)) 
 
-    # Crear objetos de Decoracion y agregarlos a decoration_list
-            # decoration_list.append(BackgroundObject(number=31,x=50,y=666,width=100,height=100)) 
-            # decoration_list.append(BackgroundObject(number=33,x=750,y=666,width=100,height=100)) 
-            # decoration_list.append(BackgroundObject(number=22,x=150,y=656,width=100,height=100)) 
-            # decoration_list.append(BackgroundObject(number=134,x=256,y=203,width=50,height=50)) 
+    decoration_list.append(BackgroundObject(number=41,x=100,y=650,width=100,height=100)) 
+    decoration_list.append(BackgroundObject(number=24,x=74,y=518,width=150,height=150)) 
+    decoration_list.append(BackgroundObject(number=27,x=74,y=640,width=50,height=50)) 
+    decoration_list.append(BackgroundObject(number=27,x=174,y=670,width=50,height=50)) 
+
             # decoration_list.append(BackgroundObject(number=135,x=256,y=255,width=50,height=50)) 
             # decoration_list.append(BackgroundObject(number=136,x=203,y=255,width=50,height=50)) 
             # decoration_list.append(BackgroundObject(number=137,x=309,y=255,width=50,height=50)) 
             # decoration_list.append(BackgroundObject(number=67,x=409,y=255,width=50,height=50)) 
-    # Agregar más objetos de Decoracion si es necesario
 
-    meta = meta_(x=1200,y=658,p_scale=1)
+
+    meta = meta_(x=1700,y=658,p_scale=1)
 
 
     

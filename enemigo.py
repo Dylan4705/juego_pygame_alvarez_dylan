@@ -70,7 +70,7 @@ class Enemy():
                 if self.enemy == 5:
                     self.contador += 1
                     if self.contador == 2:
-                        print("SE MURIO NOMAS")
+                 
                         self.is_dead = True
 
             self.change_x(self.move_x)

@@ -40,7 +40,7 @@ class Botin():
                 elif self.type_botin == 3:
                     player.lives += 3
                 self.flag_first = False
-            print(player.score)
+     
 
 
     def update(self, player_rect, point_list, point_index):

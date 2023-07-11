@@ -94,9 +94,9 @@ def nivel_1_():
     floor = []
 
     enemy_list.append(Enemy( 2,x=382, y=550, move_x=-5, speed=2, limit_x_start=0, limit_x_end= 50, p_scale=1.5))
-    # enemy_list.append(Enemy( 1,x=1582, y=350, move_x=-5, speed=4, limit_x_start=0, limit_x_end= 96, p_scale=1.5))
-    # enemy_list.append(Enemy( 4,x=954, y=90, move_x=5, speed=2, limit_x_start=0, limit_x_end=300,shoot_interval=3000, p_scale=2))
-    # enemy_list.append(Enemy( 3,x=614, y=550, move_x=5, speed=2, limit_x_start=0, limit_x_end=60, p_scale=1.5))
+    enemy_list.append(Enemy( 1,x=1582, y=350, move_x=-5, speed=4, limit_x_start=0, limit_x_end= 96, p_scale=1.5))
+    enemy_list.append(Enemy( 4,x=954, y=90, move_x=5, speed=2, limit_x_start=0, limit_x_end=300,shoot_interval=3000, p_scale=2))
+    enemy_list.append(Enemy( 3,x=614, y=550, move_x=5, speed=2, limit_x_start=0, limit_x_end=60, p_scale=1.5))
 
 
     botin_list.append(Botin(type_botin= 1,x= 644,y=510,p_scale=3))
