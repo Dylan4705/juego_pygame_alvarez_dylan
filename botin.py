@@ -34,11 +34,17 @@ class Botin():
 
             if self.flag_first == True:
                 if self.type_botin == 1:
+                    jump_sound = pygame.mixer.Sound("sounds\pick_coin.wav")
+                    jump_sound.play()
                     player.obtain_point(10)
                 elif self.type_botin == 2:
                     player.obtain_point(5)
+                    jump_sound = pygame.mixer.Sound("sounds\pick_coin.wav")
+                    jump_sound.play()
                 elif self.type_botin == 3:
                     player.lives += 3
+                    jump_sound = pygame.mixer.Sound("sounds\pick_heart.wav")
+                    jump_sound.play()
                 self.flag_first = False
      
 

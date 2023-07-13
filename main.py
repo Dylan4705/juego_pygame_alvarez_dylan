@@ -7,7 +7,6 @@ from constantes import *
 
 # Inicializar Pygame
 pygame.init()
-screen = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
 pygame.display.set_caption("Ingrese Nivel")
 
 
@@ -87,18 +86,18 @@ def main(player_is_win_lvl1,player_is_win_lvl2):
             nivel_3()
         # Añade más niveles según sea necesario
 
-        screen.blit(fondo, (0, 0))
-        screen.blit(marco, marco_rect)
-        screen.blit(marco_1_image, marco_1_rect)
-        screen.blit(marco_2_image, marco_2_rect)
-        screen.blit(marco_3_image, marco_3_rect)
-        screen.blit(nivel_1_numero, nivel_1_rect)
-        screen.blit(nivel_2_numero, nivel_2_rect)
-        screen.blit(nivel_3_numero, nivel_3_rect)
+        SCREEN.blit(fondo, (0, 0))
+        SCREEN.blit(marco, marco_rect)
+        SCREEN.blit(marco_1_image, marco_1_rect)
+        SCREEN.blit(marco_2_image, marco_2_rect)
+        SCREEN.blit(marco_3_image, marco_3_rect)
+        SCREEN.blit(nivel_1_numero, nivel_1_rect)
+        SCREEN.blit(nivel_2_numero, nivel_2_rect)
+        SCREEN.blit(nivel_3_numero, nivel_3_rect)
         if player_is_win_lvl1 == False:
-            screen.blit(bloqued_lvl2, (845, 370))
+            SCREEN.blit(bloqued_lvl2, (845, 370))
         if player_is_win_lvl2 == False:
-            screen.blit(bloqued_lvl3, (1100, 370))
+            SCREEN.blit(bloqued_lvl3, (1100, 370))
         pygame.display.flip()  # Actualizar la pantalla en cada iteración del bucle
 
     pygame.quit()

@@ -1,10 +1,13 @@
+import pygame
 ANCHO_VENTANA = 1800
 ALTO_VENTANA = 800
 DIRECCION_L = 0
 DIRECCION_R = 1
 FPS = 60
 
-DEBUG = True
+
+SCREEN = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
+DEBUG = False
 PATH_IMAGE = "images/"
 
 RED = (255,0,0)

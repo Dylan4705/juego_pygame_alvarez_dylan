@@ -89,7 +89,7 @@ class Player:
 
     def pause(self):
         self.is_paused = not self.is_paused
-
+        
         if self.is_paused:
             self.move_x = 0
             self.move_y = 0
@@ -142,7 +142,7 @@ class Player:
  
     def hit_player(self,negative_lives):
         if not self.invulnerable:
-
+            
             self.lives -= negative_lives
             self.move_y = -self.gravity* 0.5
             if self.direction == DIRECCION_L:
@@ -151,7 +151,8 @@ class Player:
             else:
                 self.move_x += -self.gravity*0.3
             self.frame = 0
-
+            jump_sound = pygame.mixer.Sound(r"sounds\recibe_damage.wav")
+            jump_sound.play()
             self.recibe_hurt = True
             self.invulnerable = True  # Activar el estado de invulnerabilidad
             self.invulnerable_timer = pygame.time.get_ticks()  # Iniciar el temporizador

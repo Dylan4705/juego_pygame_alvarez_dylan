@@ -2,7 +2,7 @@ import pygame
 from constantes import *
 
 class platform_movile(pygame.sprite.Sprite):
-    def __init__(self, image_number, x, y, width, height, limit_x_start, limit_x_end, speed,player):
+    def __init__(self, x, y, width, height, limit_x_start, limit_x_end, speed,player):
         super().__init__()
 
         self.image = pygame.image.load("images\locations\plataforma.png") 
@@ -28,7 +28,6 @@ class platform_movile(pygame.sprite.Sprite):
             self.collision_with_player = pygame.Rect(self.rect.x ,self.rect.y-100,self.rect.w,self.rect.h+100)         
             if self.collision_with_player.colliderect(self.player.trap_collition):
                 self.rect.x += self.speed
-                
                 if self.rect.x < self.limit_x_start or self.rect.x > self.limit_x_end:
                     self.speed *= -1  # Invertir la dirección si alcanza un límite
 

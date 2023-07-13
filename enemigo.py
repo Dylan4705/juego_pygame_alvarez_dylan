@@ -101,6 +101,8 @@ class Enemy():
 
             for rock in rocks:
                 if self.collision_rect.colliderect(rock.rect):
+                    jump_sound = pygame.mixer.Sound("sounds\do_damage.wav")
+                    jump_sound.play()
                     self.is_dead = True
                     rock.kill()
         else:
